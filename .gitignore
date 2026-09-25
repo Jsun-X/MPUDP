@@ -4,3 +4,11 @@ __pycache__/
 *.pyc
 *.pyo
 tools/get-pip.py
+
+# 说明与资料（仅本地 / EX 目录，不上传 GitHub）
+EX/
+ex/
+docs/
+README.txt
+*.md
+!requirements.txt

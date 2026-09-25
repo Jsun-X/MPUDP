@@ -37,7 +37,7 @@ def _setup_chinese_font() -> None:
         plt.rcParams["font.sans-serif"] = ["DejaVu Sans"]
     plt.rcParams["axes.unicode_minus"] = False
 
-FIG_DIR = Path(__file__).resolve().parent / "figures"
+FIG_DIR = Path(__file__).resolve().parent / "docs" / "figures"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 MESSAGE = b"MPUDP: multi-socket multipath UDP with fountain codes -- experiment payload."
