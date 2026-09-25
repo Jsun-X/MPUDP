@@ -1,4 +1,0 @@
-numpy>=1.20
-matplotlib>=3.5
-# 可选：RFC6330 RaptorQ（GF(2^8) 完整实现）
-# raptorq>=2.0
