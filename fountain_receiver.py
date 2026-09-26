@@ -9,7 +9,7 @@ import threading
 from typing import List, Tuple
 
 from fountain_engine import FountainAccumulator
-from mpudp_protocol import unpack_message
+from mpudp_protocol import pack_message, unpack_message
 
 Addr = Tuple[str, int]
 
@@ -48,6 +48,9 @@ def main() -> None:
             try:
                 msg = unpack_message(data)
             except (UnicodeDecodeError, ValueError, KeyError):
+                continue
+            if msg.get("type") == "probe":
+                sock.sendto(pack_message({"type": "probe_ack"}), addr)
                 continue
             if msg.get("type") != "fountain":
                 continue

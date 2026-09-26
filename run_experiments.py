@@ -36,9 +36,26 @@ def _setup_chinese_font() -> None:
     else:
         plt.rcParams["font.sans-serif"] = ["DejaVu Sans"]
     plt.rcParams["axes.unicode_minus"] = False
+    # 图3/图4：标题、轴标签、图例、刻度字号加大（便于文档/知乎插图）
+    plt.rcParams.update(
+        {
+            "font.size": 13,
+            "axes.titlesize": 16,
+            "axes.labelsize": 14,
+            "legend.fontsize": 12,
+            "xtick.labelsize": 12,
+            "ytick.labelsize": 12,
+        }
+    )
 
-FIG_DIR = Path(__file__).resolve().parent / "docs" / "figures"
-FIG_DIR.mkdir(parents=True, exist_ok=True)
+
+ROOT = Path(__file__).resolve().parent
+FIG_DIRS = [
+    ROOT / "EX" / "docs" / "figures",
+    ROOT / "docs" / "figures",
+]
+for d in FIG_DIRS:
+    d.mkdir(parents=True, exist_ok=True)
 
 MESSAGE = b"MPUDP: multi-socket multipath UDP with fountain codes -- experiment payload."
 SYMBOL_SIZE = 16
@@ -79,14 +96,17 @@ def fig_packets_vs_loss():
     plt.axhline(k, color="gray", linestyle="--", label=f"源符号数 K={k}")
     plt.xlabel("模拟丢包率 (%)")
     plt.ylabel("收到包数（首次解码成功，均值）")
-    plt.title("图3  LT 喷泉码：丢包率与解码所需冗余")
+    plt.title("LT 喷泉码：丢包率与解码所需冗余")
     plt.grid(True, alpha=0.3)
     plt.legend()
-    out = FIG_DIR / "fig3_lt_loss_vs_packets.png"
     plt.tight_layout()
-    plt.savefig(out, dpi=150)
+    outs = []
+    for fig_dir in FIG_DIRS:
+        out = fig_dir / "fig3_lt_loss_vs_packets.png"
+        plt.savefig(out, dpi=150)
+        outs.append(out)
     plt.close()
-    return out
+    return outs
 
 
 def fig_overhead_success():
@@ -113,23 +133,27 @@ def fig_overhead_success():
         rates.append(ok / TRIALS * 100)
     plt.figure(figsize=(7, 4.5))
     plt.plot(overheads, rates, "s-", color="#c0392b")
-    plt.xlabel("编码冗余（发送包数 / K）")
+    plt.xlabel("冗余倍数（发送编码包数 ÷ 源符号数 K）")
     plt.ylabel("解码成功率 (%)")
-    plt.title(f"图4  固定丢包率 {loss*100:.0f}% 下 LT 冗余与成功率")
+    plt.title(f"固定丢包率 {loss*100:.0f}% 下 LT 冗余与成功率")
     plt.grid(True, alpha=0.3)
     plt.ylim(0, 105)
-    out = FIG_DIR / "fig4_lt_overhead_vs_success.png"
     plt.tight_layout()
-    plt.savefig(out, dpi=150)
+    outs = []
+    for fig_dir in FIG_DIRS:
+        out = fig_dir / "fig4_lt_overhead_vs_success.png"
+        plt.savefig(out, dpi=150)
+        outs.append(out)
     plt.close()
-    return out
+    return outs
 
 
 def main():
     _setup_chinese_font()
     p1 = fig_packets_vs_loss()
     p2 = fig_overhead_success()
-    print("已写入:", p1, p2)
+    for path in {*p1, *p2}:
+        print("已写入:", path)
 
 
 if __name__ == "__main__":
